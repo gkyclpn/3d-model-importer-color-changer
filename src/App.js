@@ -1,24 +1,17 @@
-import React from "react";
+import React, {useLayoutEffect} from "react";
 import * as BABYLON from "babylonjs";
 import 'babylonjs-loaders';
 import SceneComponent from "./SceneComponent"; // uses above component in same directory
 //import SceneComponent from 'babylonjs-hook'; // if you install 'babylonjs-hook' NPM.
 import "./index.css";
-
-function CreateModelButton(props) {
-
-  return (
-    <button id="def-but">
-     
-    </button>
-  );
-}
+import countryTexture from './country.env';
 
 const onSceneReady = (scene) => {
 
   scene.createDefaultCameraOrLight(true,true,true);
   const canvas = scene.getEngine().getRenderingCanvas();
   const camera = scene.activeCamera;
+  
   // This attaches the camera to the canvas
   camera.attachControl(canvas, true);
   var button = document.getElementById("import-btn");
@@ -37,7 +30,9 @@ const onSceneReady = (scene) => {
     length = scene.meshes.length;
     totalTexture = scene.textures.length;
     reader.onload = function(e) { 
-        BABYLON.SceneLoader.Append("", reader.result, scene, function (scene) {                     
+        BABYLON.SceneLoader.Append("", reader.result, scene, function (scene) {    
+          
+                
             if(scene.activeCamera.alpha < 0)
                 scene.activeCamera.alpha *= -1;
             var maxY = 0;
@@ -54,6 +49,11 @@ const onSceneReady = (scene) => {
             scene.activeCamera.lowerRadiusLimit = maxY * 5;
             scene.activeCamera.radius = maxY * 8;
             scene.activeCamera.upperRadiusLimit = maxY * 25;
+            //var hdrTexture = new BABYLON.CubeTexture(countryTexture, scene);
+            //var sphere = BABYLON.Mesh.CreateSphere("sphere1", maxY*30, maxY*10, scene);
+            //var sphereMtl = new BABYLON.PBRMaterial("sphereMtl", scene);
+            //sphereMtl.reflectionTexture = hdrTexture;
+            //sphere.material= sphereMtl;
             for (i=0;i<meshArray.length;i++)
                 meshArray[i].setEnabled(false);
             textureLength.push(scene.textures.length - totalTexture);
@@ -85,10 +85,11 @@ const onSceneReady = (scene) => {
     };
 
 
-    var newModelButton = document.createElement("button");
-            newModelButton.id = "model-" + String(meshArray.length);
+            var newModelButton = document.createElement("button")
+            newModelButton.id = "model-" + String(meshArray.length);    
             newModelButton.innerText = "Model " + String(meshArray.length);
             newModelButton.value = String(meshArray.length);
+            newModelButton.className = "px-4 py-2 bg-gray-600 shadow-3xl rounded-xl hover:bg-gray-500 text-white font-semibold";
             document.getElementById("model-button-part").appendChild(newModelButton);
             selectedModel = meshArray.length;
             newModelButton.onclick = (e) => {
